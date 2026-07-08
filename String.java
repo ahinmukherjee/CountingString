@@ -1,114 +1,136 @@
-JMenuBar menuBar = new JMenuBar();
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.ensemble import VotingClassifier
 
-JMenu fd = new JMenu("FD");
-JMenu rd = new JMenu("RD");
+lr = LogisticRegression(random_state=42)
+lr.fit(X2_train, y2_train)
+y_pred_lr = lr.predict(X2_test)
+dt = DecisionTreeClassifier(random_state=42)
+dt.fit(X2_train, y2_train)
+y_pred_dt = dt.predict(X2_test)
+rf = RandomForestClassifier(
+    n_estimators=100,
+    random_state=42
+)
+rf.fit(X2_train, y2_train)
+y_pred_rf = rf.predict(X2_test)
+nb = GaussianNB()
+nb.fit(X2_train, y2_train)
+y_pred_nb = nb.predict(X2_test)from sklearn.metrics import accuracy_score
 
-// Menu bar style
-menuBar.setBackground(new Color(30, 30, 30));
-menuBar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-menuBar.setPreferredSize(new Dimension(600, 45));
+accuracy_lr = accuracy_score(y2_test, y_pred_lr)
+print("Logistic Regression Accuracy:", accuracy_lr)
 
-// FD style
-fd.setForeground(Color.WHITE);
-fd.setBackground(new Color(30, 30, 30));
-fd.setFont(new Font("Calibri", Font.BOLD, 16));
-fd.setOpaque(true);
-fd.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+accuracy_dt = accuracy_score(y2_test, y_pred_dt)
+print("Decision Tree Accuracy:", accuracy_dt)
 
-// RD style
-rd.setForeground(Color.WHITE);
-rd.setBackground(new Color(30, 30, 30));
-rd.setFont(new Font("Calibri", Font.BOLD, 16));
-rd.setOpaque(true);
-rd.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+accuracy_rf = accuracy_score(y2_test, y_pred_rf)
+print("Random Forest Accuracy:", accuracy_rf)
 
-menuBar.add(fd);
-menuBar.add(rd);
+accuracy_nb = accuracy_score(y2_test, y_pred_nb)
+print("Naive Bayes Accuracy:", accuracy_nb)
 
-setJMenuBar(menuBar);
 
-```java
-class UserClass extends JFrame {
+print("Logistic Regression Accuracy:", round(accuracy_lr * 100, 2), "%")
+print("Decision Tree Accuracy:", round(accuracy_dt * 100, 2), "%")
+print("Random Forest Accuracy:", round(accuracy_rf * 100, 2), "%")
+print("Naive Bayes Accuracy:", round(accuracy_nb * 100, 2), "%")
 
-    CardLayout cardLayout;
-    JPanel mainPanel;
 
-    public UserClass() {
-        setSize(600, 450);
-        setLocationRelativeTo(null);
-        setTitle("User");
-        setResizable(false);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    import pandas as pd
 
-        // Main panel: switches between FD and RD pages
-        cardLayout = new CardLayout();
-        mainPanel = new JPanel(cardLayout);
+accuracy_table = pd.DataFrame({
+    "Model": [
+        "Logistic Regression",
+        "Decision Tree",
+        "Random Forest",
+        "Naive Bayes"
+    ],
+    "Accuracy (%)": [
+        round(accuracy_lr * 100, 2),
+        round(accuracy_dt * 100, 2),
+        round(accuracy_rf * 100, 2),
+        round(accuracy_nb * 100, 2)
+    ]
+})
 
-        mainPanel.add(new FDPanel(), "FD");
-        mainPanel.add(new RDPanel(), "RD");
+print(accuracy_table)
 
-        // Menu bar
-        JMenuBar menuBar = new JMenuBar();
+from sklearn.metrics import accuracy_score, precision_score, recall_score
+from sklearn.metrics import f1_score, confusion_matrix, classification_report
 
-        JMenu accountMenu = new JMenu("Account");
+def evaluate_model(model_name, y_test, y_pred):
 
-        JRadioButtonMenuItem fdItem = new JRadioButtonMenuItem("FD");
-        JRadioButtonMenuItem rdItem = new JRadioButtonMenuItem("RD");
+    print("="*50)
+    print(model_name)
+    print("="*50)
 
-        // Only one item can be selected at a time
-        ButtonGroup group = new ButtonGroup();
-        group.add(fdItem);
-        group.add(rdItem);
+    print("Accuracy :", accuracy_score(y_test, y_pred))
+    print("Precision :", precision_score(y_test, y_pred, average='weighted'))
+    print("Recall :", recall_score(y_test, y_pred, average='weighted'))
+    print("F1 Score :", f1_score(y_test, y_pred, average='weighted'))
 
-        accountMenu.add(fdItem);
-        accountMenu.add(rdItem);
+    print("\nConfusion Matrix")
+    print(confusion_matrix(y_test, y_pred))
 
-        menuBar.add(accountMenu);
-        setJMenuBar(menuBar);
+    print("\nClassification Report")
+    print(classification_report(y_test, y_pred))
 
-        // FD selected
-        fdItem.addActionListener(e -> {
-            cardLayout.show(mainPanel, "FD");
-            System.out.println("FD selected");
-        });
 
-        // RD selected
-        rdItem.addActionListener(e -> {
-            cardLayout.show(mainPanel, "RD");
-            System.out.println("RD selected");
-        });
+    evaluate_model("Logistic Regression", y2_test, y_pred_lr)
 
-        // Default page
-        fdItem.setSelected(true);
-        cardLayout.show(mainPanel, "FD");
+evaluate_model("Decision Tree", y2_test, y_pred_dt)
 
-        add(mainPanel);
+evaluate_model("Random Forest", y2_test, y_pred_rf)
 
-        setVisible(true);
-    }
-}
+evaluate_model("Naive Bayes", y2_test, y_pred_nb)
 
-class FDPanel extends JPanel {
+evaluate_model("Voting Classifier", y2_test, y_pred_vote)
 
-    public FDPanel() {
-        setBackground(new Color(210, 235, 255));
 
-        JLabel label = new JLabel("FD Calculator Page");
-        label.setFont(new Font("Calibri", Font.BOLD, 24));
 
-        add(label);
-    }
-}
+    from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.ensemble import VotingClassifier
 
-class RDPanel extends JPanel {
+lr = LogisticRegression(random_state=42)
+lr.fit(X2_train, y2_train)
+y_pred_lr = lr.predict(X2_test)
+dt = DecisionTreeClassifier(random_state=42)
+dt.fit(X2_train, y2_train)
+y_pred_dt = dt.predict(X2_test)
+rf = RandomForestClassifier(
+    n_estimators=100,
+    random_state=42
+)
+rf.fit(X2_train, y2_train)
+y_pred_rf = rf.predict(X2_test)
+nb = GaussianNB()
+nb.fit(X2_train, y2_train)
+y_pred_nb = nb.predict(X2_test)
+voting = VotingClassifier(
 
-    public RDPanel() {
-        setBackground(new Color(255, 240, 200));
+estimators=[
 
-        JLabel label = new JLabel("RD Calculator Page");
-        label.setFont(new Font("Calibri", Font.BOLD, 24));
+('lr', lr),
 
-        add(label);
-    }
-}
-```
+('dt', dt),
+
+('rf', rf),
+
+('nb', nb)
+
+],
+
+voting='hard'
+
+)
+voting.fit(X2_train, y2_train)
+y_pred_vote = voting.predict(X2_test)
+    
+
+    
