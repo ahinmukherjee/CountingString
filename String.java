@@ -1,40 +1,128 @@
-from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.naive_bayes import GaussianNB
-from sklearn.ensemble import VotingClassifier
-
-lr = LogisticRegression(random_state=42)
-lr.fit(X2_train, y2_train)
-y_pred_lr = lr.predict(X2_test)
-dt = DecisionTreeClassifier(random_state=42)
-dt.fit(X2_train, y2_train)
-y_pred_dt = dt.predict(X2_test)
-rf = RandomForestClassifier(
-    n_estimators=100,
-    random_state=42
-)
 rf.fit(X2_train, y2_train)
-y_pred_rf = rf.predict(X2_test)
-nb = GaussianNB()
-nb.fit(X2_train, y2_train)
-y_pred_nb = nb.predict(X2_test)from sklearn.metrics import accuracy_score
 
-accuracy_lr = accuracy_score(y2_test, y_pred_lr)
-print("Logistic Regression Accuracy:", accuracy_lr)
+new_patient = pd.DataFrame([{
 
-accuracy_dt = accuracy_score(y2_test, y_pred_dt)
-print("Decision Tree Accuracy:", accuracy_dt)
+    "District": 12,
 
-accuracy_rf = accuracy_score(y2_test, y_pred_rf)
-print("Random Forest Accuracy:", accuracy_rf)
+    "MinTempC": 8,
 
-accuracy_nb = accuracy_score(y2_test, y_pred_nb)
-print("Naive Bayes Accuracy:", accuracy_nb)
+    "MaxTempC": 18,
+
+    "Gender": 1,
+
+    "AgeGroup": 0,
+
+    "FamilyHistory": 1,
+
+    "HumidityPercent": 72,
+
+    "Altitude (m)": 2042,
+
+    "WindSpeed kmph": 14,
+
+    "PM2.5": 32,
+
+    "IndoorExposure": 0,
+
+    "Sneezing": 1,
+
+    "Runny nose": 1,
+
+    "Nasal congestion (stuffy nose)": 1,
+
+    "Red eyes": 0,
+
+    "Itchy eyes": 1,
+
+    "Watery eyes": 1,
+
+    "Itchy throat": 1,
+
+    "Cough": 1,
+
+    "Itchy skin": 0,
+
+    "Skin redness": 0,
+
+    "Skin rash": 0,
+
+    "Shortness of breath or asthma in cold air": 1,
+
+    "SymptomScore": 8
+
+}])
+
+predicted_risk = rf.predict(new_patient)
 
 
-print("Logistic Regression Accuracy:", round(accuracy_lr * 100, 2), "%")
-print("Decision Tree Accuracy:", round(accuracy_dt * 100, 2), "%")
+
+print("Predicted Risk Level:", predicted_risk[0])
+predicted_risk = rf.predict(new_patient)
+
+print("Predicted Risk Level:", predicted_risk[0])
+
+print("Predicted Risk Level:", risk_encoder.inverse_transform(predicted_risk)[0])
+from sklearn.preprocessing import LabelEncoder
+
+risk_encoder = LabelEncoder()
+
+df["RiskLevel"] = risk_encoder.fit_transform(df["RiskLevel"])
+predicted_risk = rf.predict(new_patient)
+
+result = risk_encoder.inverse_transform(predicted_risk)
+
+print("Predicted Risk Level:", result[0])
+
+predicted_score = symptom_model.predict(new_patient_without_score)
+
+print("Predicted Symptom Score:", round(predicted_score[0]))
+
+new_patient["SymptomScore"] = round(predicted_score[0])
+
+predicted_risk = risk_model.predict(new_patient)
+
+print("Predicted Risk Level:", risk_encoder.inverse_transform(predicted_risk)[0])
+
+print("Patient Input:")
+print(new_patient.to_string(index=False))
+
+print("\nPredicted Risk Level:")
+print(risk_encoder.inverse_transform(predicted_risk)[0])
+
+new_patient = pd.DataFrame([{
+    "District": 12,
+    "MinTempC": 8,
+    "MaxTempC": 18,
+    "Gender": 1,
+    "AgeGroup": 0,
+    "FamilyHistory": 1,
+    "HumidityPercent": 72,
+    "Altitude (m)": 2042,
+    "WindSpeed kmph": 14,
+    "PM2.5": 32,
+    "IndoorExposure": 0,
+    "Sneezing": 1,
+    "Runny nose": 1,
+    "Nasal congestion (stuffy nose)": 1,
+    "Red eyes": 0,
+    "Itchy eyes": 1,
+    "Watery eyes": 1,
+    "Itchy throat": 1,
+    "Cough": 1,
+    "Itchy skin": 0,
+    "Skin redness": 0,
+    "Skin rash": 0,
+    "Shortness of breath or asthma in cold air": 1,
+    "SymptomScore": 8
+}])
+
+predicted_risk = rf.predict(new_patient)
+
+print("========== Patient Input ==========")
+print(new_patient.to_string(index=False))
+
+print("\n========== Prediction ==========")
+print("Predicted Risk Level:", risk_encoder.inverse_transform(predicted_risk)[0])print("Decision Tree Accuracy:", round(accuracy_dt * 100, 2), "%")
 print("Random Forest Accuracy:", round(accuracy_rf * 100, 2), "%")
 print("Naive Bayes Accuracy:", round(accuracy_nb * 100, 2), "%")
 
