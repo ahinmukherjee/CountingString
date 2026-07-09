@@ -1,5 +1,53 @@
 from sklearn.preprocessing import LabelEncoder
 
+# Create encoders
+district_encoder = LabelEncoder()
+gender_encoder = LabelEncoder()
+agegroup_encoder = LabelEncoder()
+familyhistory_encoder = LabelEncoder()
+risk_encoder = LabelEncoder()
+
+# Encode District
+df["District"] = district_encoder.fit_transform(df["District"])
+
+# Encode Gender
+df["Gender"] = gender_encoder.fit_transform(df["Gender"])
+
+# Encode AgeGroup
+df["AgeGroup"] = agegroup_encoder.fit_transform(df["AgeGroup"])
+
+# Encode FamilyHistory
+df["FamilyHistory"] = familyhistory_encoder.fit_transform(df["FamilyHistory"])
+
+# Encode RiskLevel
+df["RiskLevel"] = risk_encoder.fit_transform(df["RiskLevel"])
+
+
+symptom_columns = [
+    "Sneezing",
+    "Runny nose",
+    "Nasal congestion (stuffy nose)",
+    "Red eyes",
+    "Itchy eyes",
+    "Watery eyes",
+    "Itchy throat",
+    "Cough",
+    "Itchy skin",
+    "Skin redness",
+    "Skin rash",
+    "Shortness of breath or asthma in cold air"
+]
+
+for col in symptom_columns:
+    symptom_encoder = LabelEncoder()
+    df[col] = symptom_encoder.fit_transform(df[col])
+
+
+    
+    
+
+from sklearn.preprocessing import LabelEncoder
+
 # Check the current District values
 print(df["District"].head())
 
