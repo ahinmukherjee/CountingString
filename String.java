@@ -1,4 +1,293 @@
 import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import LabelEncoder
+
+# Replace this with your original training dataset filename
+df = pd.read_csv("your_original_dataset.csv")
+
+# Create RiskLevel encoder
+risk_encoder = LabelEncoder()
+df["RiskLevel"] = risk_encoder.fit_transform(df["RiskLevel"])
+
+# Use only the limited-input columns
+limited_columns = [
+    "District",
+    "Gender",
+    "AgeGroup",
+    "FamilyHistory",
+    "Sneezing",
+    "Runny nose",
+    "Nasal congestion (stuffy nose)",
+    "Red eyes",
+    "Itchy eyes",
+    "Watery eyes",
+    "Itchy throat",
+    "Cough",
+    "Itchy skin",
+    "Skin redness",
+    "Skin rash",
+    "Shortness of breath or asthma in cold air"
+]
+
+X_limited = df[limited_columns]
+y_limited = df["RiskLevel"]
+
+
+    X_limited_train, X_limited_test, y_limited_train, y_limited_test = train_test_split(
+    X_limited,
+    y_limited,
+    test_size=0.20,
+    random_state=42
+)
+
+limited_risk_model = RandomForestClassifier(
+    n_estimators=100,
+    random_state=42
+)
+
+limited_risk_model.fit(X_limited_train, y_limited_train)
+
+print("Limited risk model trained successfully.")
+
+
+
+
+    
+import pandas as pd
+
+new_patient_data = pd.read_csv(
+    "new_patient_20_data_encoded_district.csv"
+)
+
+new_patient_for_prediction = new_patient_data[limited_columns]
+
+predicted_risk = limited_risk_model.predict(new_patient_for_prediction)
+
+new_patient_data["Predicted_RiskLevel"] = risk_encoder.inverse_transform(
+    predicted_risk
+)
+
+new_patient_data.to_csv(
+    "new_patient_20_prediction_results.csv",
+    index=False
+)
+
+print("========== FIRST 5 PREDICTION RESULTS ==========")
+print(new_patient_data.head(5).to_string(index=False))
+
+print("\n========== LAST 5 PREDICTION RESULTS ==========")
+print(new_patient_data.tail(5).to_string(index=False))
+
+print("\nPrediction CSV file created successfully.")
+
+    
+
+from sklearn.preprocessing import LabelEncoder
+
+# Create separate encoders
+district_encoder = LabelEncoder()
+gender_encoder = LabelEncoder()
+agegroup_encoder = LabelEncoder()
+familyhistory_encoder = LabelEncoder()
+
+# Encode main categorical columns
+df["District"] = district_encoder.fit_transform(df["District"])
+df["Gender"] = gender_encoder.fit_transform(df["Gender"])
+df["AgeGroup"] = agegroup_encoder.fit_transform(df["AgeGroup"])
+df["FamilyHistory"] = familyhistory_encoder.fit_transform(df["FamilyHistory"])
+
+# Encode Yes / No symptom columns
+symptom_columns = [
+    "Sneezing",
+    "Runny nose",
+    "Nasal congestion (stuffy nose)",
+    "Red eyes",
+    "Itchy eyes",
+    "Watery eyes",
+    "Itchy throat",
+    "Cough",
+    "Itchy skin",
+    "Skin redness",
+    "Skin rash",
+    "Shortness of breath or asthma in cold air"
+]
+
+for col in symptom_columns:
+    encoder = LabelEncoder()
+    df[col] = encoder.fit_transform(df[col])
+
+
+    
+limited_columns = [
+    "District",
+    "Gender",
+    "AgeGroup",
+    "FamilyHistory",
+    "Sneezing",
+    "Runny nose",
+    "Nasal congestion (stuffy nose)",
+    "Red eyes",
+    "Itchy eyes",
+    "Watery eyes",
+    "Itchy throat",
+    "Cough",
+    "Itchy skin",
+    "Skin redness",
+    "Skin rash",
+    "Shortness of breath or asthma in cold air"
+]
+
+X_limited = df[limited_columns]
+y_limited = df["RiskLevel"]
+
+X_limited_train, X_limited_test, y_limited_train, y_limited_test = train_test_split(
+    X_limited,
+    y_limited,
+    test_size=0.20,
+    random_state=42
+)
+
+limited_risk_model = RandomForestClassifier(
+    n_estimators=100,
+    random_state=42
+)
+
+limited_risk_model.fit(X_limited_train, y_limited_train)
+
+print("Limited risk model trained successfully.")
+
+
+
+import pandas as pd
+
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+
+# ==================================================
+# 1. LOAD ORIGINAL TRAINING DATASET
+# ==================================================
+
+df = pd.read_csv("west_bengal_cold_allergy_1000_cleaned.csv")
+
+print("Dataset loaded successfully.")
+print(df.head())
+
+# ==================================================
+# 2. DEFINE LIMITED-INPUT COLUMNS
+# ==================================================
+
+limited_columns = [
+    "District",
+    "Gender",
+    "AgeGroup",
+    "FamilyHistory",
+    "Sneezing",
+    "Runny nose",
+    "Nasal congestion (stuffy nose)",
+    "Red eyes",
+    "Itchy eyes",
+    "Watery eyes",
+    "Itchy throat",
+    "Cough",
+    "Itchy skin",
+    "Skin redness",
+    "Skin rash",
+    "Shortness of breath or asthma in cold air"
+]
+
+symptom_columns = [
+    "Sneezing",
+    "Runny nose",
+    "Nasal congestion (stuffy nose)",
+    "Red eyes",
+    "Itchy eyes",
+    "Watery eyes",
+    "Itchy throat",
+    "Cough",
+    "Itchy skin",
+    "Skin redness",
+    "Skin rash",
+    "Shortness of breath or asthma in cold air"
+]
+
+# ==================================================
+# 3. ENCODE RISKLEVEL
+# ==================================================
+
+risk_encoder = LabelEncoder()
+df["RiskLevel"] = risk_encoder.fit_transform(df["RiskLevel"])
+
+print("\nRiskLevel categories:")
+print(risk_encoder.classes_)
+
+# ==================================================
+# 4. ENCODE DISTRICT AND OTHER TEXT COLUMNS
+# ==================================================
+
+district_encoder = LabelEncoder()
+df["District"] = district_encoder.fit_transform(df["District"])
+
+columns_to_encode = [
+    "Gender",
+    "AgeGroup",
+    "FamilyHistory"
+] + symptom_columns
+
+for col in columns_to_encode:
+    encoder = LabelEncoder()
+    df[col] = encoder.fit_transform(df[col])
+
+print("\nAll limited-input columns encoded successfully.")
+
+# ==================================================
+# 5. CREATE X AND y
+# ==================================================
+
+X_limited = df[limited_columns]
+y_limited = df["RiskLevel"]
+
+# ==================================================
+# 6. TRAIN-TEST SPLIT
+# ==================================================
+
+X_limited_train, X_limited_test, y_limited_train, y_limited_test = train_test_split(
+    X_limited,
+    y_limited,
+    test_size=0.20,
+    random_state=42,
+    stratify=y_limited
+)
+
+# ==================================================
+# 7. TRAIN LIMITED RISK MODEL
+# ==================================================
+
+limited_risk_model = RandomForestClassifier(
+    n_estimators=100,
+    random_state=42
+)
+
+limited_risk_model.fit(X_limited_train, y_limited_train)
+
+print("\nLimited risk model trained successfully.")
+
+# ==================================================
+# 8. CHECK MODEL ACCURACY
+# ==================================================
+
+y_pred = limited_risk_model.predict(X_limited_test)
+
+accuracy = accuracy_score(y_limited_test, y_pred)
+
+print("Limited Model Accuracy:", round(accuracy * 100, 2), "%")
+
+
+
+
+import pandas as pd
 
 # Load the 20-patient CSV file
 new_patient_data = pd.read_csv("new_patient_20_data.csv")
