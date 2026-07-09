@@ -1,3 +1,17 @@
+from sklearn.preprocessing import LabelEncoder
+
+# Check the current District values
+print(df["District"].head())
+
+# Create District encoder
+district_encoder = LabelEncoder()
+
+# Convert district names into numbers
+df["District"] = district_encoder.fit_transform(df["District"])
+
+print("\nDistrict encoded successfully.")
+print(df["District"].head())
+
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
