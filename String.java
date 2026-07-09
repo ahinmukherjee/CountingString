@@ -1,138 +1,226 @@
-X_limited = df[
-[
-    "District",
-    "Gender",
-    "AgeGroup",
-    "FamilyHistory",
-    "Sneezing",
-    "Runny nose",
-    "Nasal congestion (stuffy nose)",
-    "Red eyes",
-    "Itchy eyes",
-    "Watery eyes",
-    "Itchy throat",
-    "Cough",
-    "Itchy skin",
-    "Skin redness",
-    "Skin rash",
-    "Shortness of breath or asthma in cold air"
-]
-]
+import pandas as pd
 
-y_limited = df["RiskLevel"]
+# Load the 20-patient CSV file
+new_patient_data = pd.read_csv("new_patient_20_data.csv")
 
-    from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-
-X_limited_train, X_limited_test, y_limited_train, y_limited_test = train_test_split(
-    X_limited,
-    y_limited,
-    test_size=0.20,
-    random_state=42
+# Encode only District column
+new_patient_data["District"] = district_encoder.transform(
+    new_patient_data["District"]
 )
 
-limited_risk_model = RandomForestClassifier(
-    n_estimators=100,
-    random_state=42
+# Save the updated CSV file
+new_patient_data.to_csv(
+    "new_patient_20_data_encoded_district.csv",
+    index=False
 )
 
-limited_risk_model.fit(X_limited_train, y_limited_train)
+print(new_patient_data)
+print("District column encoded successfully.")
+
+import pandas as pd
+
+# Load the CSV where only District is already encoded
+new_patient_data = pd.read_csv(
+    "new_patient_20_data_encoded_district.csv"
+)
+
+# Ensure the CSV columns match the model training columns and order
+new_patient_for_prediction = new_patient_data[
+    X_limited_train.columns
+]
+
+# Predict RiskLevel for all 20 patients
+predicted_risk = limited_risk_model.predict(
+    new_patient_for_prediction
+)
+
+# Convert encoded predictions back to Low / Medium / High
+predicted_risk_text = risk_encoder.inverse_transform(
+    predicted_risk
+)
+
+# Add prediction as a new column
+new_patient_data["Predicted_RiskLevel"] = predicted_risk_text
+
+# Display all patient fields with their predicted risk
+print("========== PREDICTION RESULTS ==========")
+print(new_patient_data.to_string(index=False))
+
+# Save the final result in a new CSV file
+new_patient_data.to_csv(
+    "new_patient_20_prediction_results.csv",
+    index=False
+)
+
+print("\nPrediction CSV file created successfully.")
 
 
-    new_patient_limited = pd.DataFrame([{
-    "District": 12,
-    "Gender": 1,
-    "AgeGroup": 0,
-    "FamilyHistory": 1,
-    "Sneezing": 1,
-    "Runny nose": 1,
-    "Nasal congestion (stuffy nose)": 1,
-    "Red eyes": 0,
-    "Itchy eyes": 1,
-    "Watery eyes": 1,
-    "Itchy throat": 1,
-    "Cough": 1,
-    "Itchy skin": 0,
-    "Skin redness": 0,
-    "Skin rash": 0,
-    "Shortness of breath or asthma in cold air": 1
-}])
-predicted_risk = limited_risk_model.predict(new_patient_limited)
+# Add prediction as a new column
+new_patient_data["Predicted_RiskLevel"] = predicted_risk_text
+
+# Save ALL prediction results in a new CSV file
+new_patient_data.to_csv(
+    "new_patient_20_prediction_results.csv",
+    index=False
+)
+
+# Show only first 5 rows
+print("========== FIRST 5 PREDICTION RESULTS ==========")
+print(new_patient_data.head(5).to_string(index=False))
+
+# Show only last 5 rows
+print("\n========== LAST 5 PREDICTION RESULTS ==========")
+print(new_patient_data.tail(5).to_string(index=False))
+
+print("\nAll prediction results are saved in: new_patient_20_prediction_results.csv")
+
+import pandas as pd
+
+# Load the CSV where only District is encoded
+new_patient_data = pd.read_csv(
+    "new_patient_20_data_encoded_district.csv"
+)
+
+# Keep the same column order used during model training
+new_patient_for_prediction = new_patient_data[
+    X_limited_train.columns
+]
+
+# Predict RiskLevel for all patients
+predicted_risk = limited_risk_model.predict(
+    new_patient_for_prediction
+)
+
+# Convert encoded prediction numbers to Low / Medium / High
+predicted_risk_text = risk_encoder.inverse_transform(
+    predicted_risk
+)
+
+# Add predicted RiskLevel to the original patient data
+new_patient_data["Predicted_RiskLevel"] = predicted_risk_text
+
+# Save ALL prediction results in a new CSV file
+new_patient_data.to_csv(
+    "new_patient_20_prediction_results.csv",
+    index=False
+)
+
+# Show only the first 5 rows
+print("========== FIRST 5 PREDICTION RESULTS ==========")
+print(new_patient_data.head(5).to_string(index=False))
+
+# Show only the last 5 rows
+print("\n========== LAST 5 PREDICTION RESULTS ==========")
+print(new_patient_data.tail(5).to_string(index=False))
+
+print("\nAll prediction results are saved in: new_patient_20_prediction_results.csv")
+
+
+import pandas as pd
+
+# Load the 20-medicine CSV file
+medicine_data = pd.read_csv(
+    "cold_allergy_20_medicine_names(1).csv"
+)
+
+# Store all medicine names as a list
+medicine_list = medicine_data["MedicineName"].tolist()
+
+
+def get_research_medicines(row):
+    selected_medicines = []
+
+    # Breathing difficulty: do not automatically select medicine
+    if row["Shortness of breath or asthma in cold air"] == 1:
+        return "Clinical Review Required"
+
+    # Skin-related symptoms
+    if (
+        row["Itchy skin"] == 1
+        or row["Skin redness"] == 1
+        or row["Skin rash"] == 1
+    ):
+        selected_medicines.append("Calamine lotion")
+
+    # Eye-related symptoms
+    if (
+        row["Red eyes"] == 1
+        or row["Itchy eyes"] == 1
+        or row["Watery eyes"] == 1
+    ):
+        selected_medicines.append("Ketotifen eye drops")
+
+    # Nasal congestion
+    if row["Nasal congestion (stuffy nose)"] == 1:
+        selected_medicines.append("Saline nasal spray")
+
+    # Sneezing or runny nose
+    if row["Sneezing"] == 1 or row["Runny nose"] == 1:
+        selected_medicines.append("Cetirizine")
+
+    # Keep only one or two medicine names
+    selected_medicines = selected_medicines[:2]
+
+    # If no symptoms are selected
+    if len(selected_medicines) == 0:
+        return "No medicine label generated"
+
+    return " | ".join(selected_medicines)
+
+
+# Add one output column containing one or two research medicine labels
+new_patient_data["Predicted_Medicines"] = new_patient_data.apply(
+    get_research_medicines,
+    axis=1
+)
+
+# Save final result CSV
+new_patient_data.to_csv(
+    "final_cold_allergy_risk_and_medicine_results.csv",
+    index=False
+)
+
+print("========== FIRST 5 FINAL RESULTS ==========")
+print(new_patient_data.head(5).to_string(index=False))
+
+print("\n========== LAST 5 FINAL RESULTS ==========")
+print(new_patient_data.tail(5).to_string(index=False))
 
 print(
-    "Predicted Risk Level:",
-    risk_encoder.inverse_transform(predicted_risk)[0]
+    "\nFinal CSV created: "
+    "final_cold_allergy_risk_and_medicine_results.csv"
 )
 
 
-    
-# Patient data: use None for values the patient did not provide
-new_patient = pd.DataFrame([{
-    "District": 12,
-    "MinTempC": None,
-    "MaxTempC": None,
-    "Gender": 1,
-    "AgeGroup": 0,
-    "FamilyHistory": 1,
-    "HumidityPercent": None,
-    "Altitude (m)": None,
-    "WindSpeed kmph": None,
-    "PM2.5": None,
-    "IndoorExposure": None,
-    "Sneezing": 1,
-    "Runny nose": 1,
-    "Nasal congestion (stuffy nose)": 1,
-    "Red eyes": 0,
-    "Itchy eyes": 1,
-    "Watery eyes": 1,
-    "Itchy throat": 1,
-    "Cough": 1,
-    "Itchy skin": 0,
-    "Skin redness": 0,
-    "Skin rash": 0,
-    "Shortness of breath or asthma in cold air": 1,
-    "SymptomScore": None
-}])
+# Print every patient detail with prediction and medicine name
+for index, row in new_patient_data.iterrows():
 
-# Keep the original patient data for display
-patient_display = new_patient.copy()
+    print("\n========================================")
+    print(f"PATIENT NUMBER: {index + 1}")
+    print("========================================")
 
-# Fill missing numeric values only for model prediction
-numeric_columns = [
-    "MinTempC",
-    "MaxTempC",
-    "HumidityPercent",
-    "Altitude (m)",
-    "WindSpeed kmph",
-    "PM2.5",
-    "IndoorExposure",
-    "SymptomScore"
-]
+    print("\n========== PATIENT DETAILS ==========")
 
-for col in numeric_columns:
-    if new_patient[col].isnull().any():
-        new_patient[col] = new_patient[col].fillna(df[col].median())
+    print("District:", row["District"])
+    print("Gender:", row["Gender"])
+    print("AgeGroup:", row["AgeGroup"])
+    print("FamilyHistory:", row["FamilyHistory"])
+    print("Sneezing:", row["Sneezing"])
+    print("Runny nose:", row["Runny nose"])
+    print("Nasal congestion (stuffy nose):", row["Nasal congestion (stuffy nose)"])
+    print("Red eyes:", row["Red eyes"])
+    print("Itchy eyes:", row["Itchy eyes"])
+    print("Watery eyes:", row["Watery eyes"])
+    print("Itchy throat:", row["Itchy throat"])
+    print("Cough:", row["Cough"])
+    print("Itchy skin:", row["Itchy skin"])
+    print("Skin redness:", row["Skin redness"])
+    print("Skin rash:", row["Skin rash"])
+    print(
+        "Shortness of breath or asthma in cold air:",
+        row["Shortness of breath or asthma in cold air"]
+    )
 
-# Ensure column order matches the trained Random Forest model
-new_patient_for_prediction = new_patient[X2_train.columns]
-
-# Predict risk level
-predicted_risk = rf.predict(new_patient_for_prediction)
-risk_level = risk_encoder.inverse_transform(predicted_risk)[0]
-
-# Print every patient field
-print("========== PATIENT DETAILS ==========")
-
-for column in patient_display.columns:
-    value = patient_display.loc[0, column]
-
-    if pd.isna(value):
-        print(f"{column}: Not provided")
-    else:
-        print(f"{column}: {value}")
-
-print("\n========== PREDICTION ==========")
-print("Predicted Risk Level:", risk_level)
-
-    
-    
+    print("\n========== PREDICTION ==========")
+    print("Predicted Risk Level:", row["Predicted_RiskLevel"])
+    print("Predicted Medicine:", row["Predicted_Medicines"])
