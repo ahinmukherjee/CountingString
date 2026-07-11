@@ -1,3 +1,52 @@
+import pandas as pd
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
+# Store all models and their predictions
+models = {
+    "Logistic Regression": y_pred_lr,
+    "Decision Tree": y_pred_dt,
+    "Random Forest": y_pred_rf,
+    "Naïve Bayes": y_pred_nb,
+    "Hybrid Voting Classifier": y_pred_vote
+}
+
+# Create an empty list
+results = []
+
+# Calculate metrics for each model
+for model_name, y_pred in models.items():
+
+    accuracy = accuracy_score(y2_test, y_pred)
+    precision = precision_score(y2_test, y_pred, average="weighted")
+    recall = recall_score(y2_test, y_pred, average="weighted")
+    f1 = f1_score(y2_test, y_pred, average="weighted")
+
+    results.append([
+        model_name,
+        round(accuracy * 100, 2),
+        round(precision, 4),
+        round(recall, 4),
+        round(f1, 4)
+    ])
+
+# Create DataFrame
+results_df = pd.DataFrame(
+    results,
+    columns=[
+        "Model",
+        "Accuracy (%)",
+        "Precision",
+        "Recall",
+        "F1-Score"
+    ]
+)
+
+print("========== MODEL COMPARISON ==========")
+print(results_df.to_string(index=False))
+
+
+
+
 from sklearn.preprocessing import LabelEncoder
 
 # Create encoders
